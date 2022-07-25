@@ -6,7 +6,8 @@
 
 ### Breaking Changes
 
-_None_
+* This is a test.  
+  [#1](https://github.com/SwiftGen/SwiftGen/issues/2)
 
 ### New Features
 
