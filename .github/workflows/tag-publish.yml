@@ -1,0 +1,26 @@
+name: Publish on Tag
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  github:
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      -
+        name: Create release on GitHub
+        run: bundle exec rake release:github
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.danger_github_api_token }}
