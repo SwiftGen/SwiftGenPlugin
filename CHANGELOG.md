@@ -2,7 +2,7 @@
 
 ---
 
-## Stable
+## Stable Branch
 
 ### Breaking Changes
 

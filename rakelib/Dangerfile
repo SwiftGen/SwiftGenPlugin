@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'rakelib/check_changelog'
+require_relative 'check_changelog'
+
+is_release = github.branch_for_head.start_with?('release/')
+is_hotfix = github.branch_for_head.start_with?('hotfix/')
 
 ################################################
 # Welcome message
@@ -18,6 +21,34 @@ warn('PR is classed as Work in Progress') if github.pr_title.include? '[WIP]'
 
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500 && !is_release
+
+################################################
+# Check for correct base branch
+if is_release
+  message('This is a Release PR')
+
+  require 'open3'
+
+  stdout, _, status = Open3.capture3('bundle', 'exec', 'rake', 'changelog:check')
+  markdown [
+    '',
+    '### ChangeLog check',
+    '',
+    stdout
+  ]
+  need_fixes << fail('Please fix the CHANGELOG errors') unless status.success?
+
+  stdout, _, status = Open3.capture3('bundle', 'exec', 'rake', 'release:check_versions')
+  markdown [
+    '',
+    '### Release version check',
+    '',
+    stdout
+  ]
+  need_fixes << fail('Please fix the versions inconsistencies') unless status.success?
+elsif is_hotfix
+  message('This is a Hotfix PR')
+end
 
 ################################################
 # Check for a CHANGELOG entry

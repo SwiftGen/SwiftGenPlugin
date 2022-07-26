@@ -4,8 +4,8 @@
 # - MIN_XCODE_VERSION
 
 require 'json'
-require 'pathname'
 require 'open3'
+require 'pathname'
 
 # Utility functions to run Xcode commands, extract versionning info and logs messages
 #
@@ -40,14 +40,43 @@ class Utils
     File.open('Package.swift').read()
       .match(/https:\/\/.*artifactbundle.zip/)[0]
       .match(/\d+\.\d+\.\d+/)[0]
+  end
+
+  def self.podspec_as_json(file)
+    file += '.podspec' unless file.include?('.podspec')
+    json, _, _ = Open3.capture3('bundle', 'exec', 'pod', 'ipc', 'spec', file)
+    JSON.parse(json)
+  end
+
+  def self.podspec_version(file)
+    podspec_as_json(file)['version']
+  end
+
+  def self.pod_trunk_last_version(pod)
+    require 'yaml'
+    stdout, _, _ = Open3.capture3('bundle', 'exec', 'pod', 'trunk', 'info', pod)
+    stdout.sub!("\n#{pod}\n", '')
+    last_version_line = YAML.safe_load(stdout).first['Versions'].last
+    /^[0-9.]*/.match(last_version_line)[0] # Just the 'x.y.z' part
+  end
+
+  def self.spm_own_version(dep)
+    dependencies = JSON.load(File.new('Package.resolved'))['object']['pins']
+    dependencies.find { |d| d['package'] == dep }['state']['version']
   end  
+
+  def self.spm_resolved_version(dep)
+    dependencies = JSON.load(File.new('Package.resolved'))['object']['pins']
+    dependencies.find { |d| d['package'] == dep }['state']['version']
+  end
 
   def self.last_git_tag_version
     `git describe --tags --abbrev=0`.strip
   end
 
   def self.octokit_client
-    token   = File.exist?('.apitoken') && File.read('.apitoken')
+    token   = ENV['DANGER_GITHUB_API_TOKEN']
+    token ||= File.exist?('.apitoken') && File.read('.apitoken')
     token ||= File.exist?('../.apitoken') && File.read('../.apitoken')
     Utils.print_error('No .apitoken file found') unless token
     require 'octokit'

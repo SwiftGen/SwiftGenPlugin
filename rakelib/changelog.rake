@@ -9,14 +9,14 @@ namespace :changelog do
   desc 'Add the empty CHANGELOG entries after a new release'
   task :reset do
     changelog = File.read('CHANGELOG.md')
-    abort('A Develop entry already exists') if changelog =~ /^##\s*Develop$/
+    abort('A Stable entry already exists') if changelog =~ /^##\s*Stable Branch$/
     changelog.sub!(/^##[^#]/, "#{header}\\0")
     File.write('CHANGELOG.md', changelog)
   end
 
   def header
     <<-HEADER.gsub(/^\s*\|/, '')
-      |## Stable
+      |## Stable Branch
       |
       |### Breaking Changes
       |
@@ -69,19 +69,5 @@ namespace :changelog do
       |
       |* [SwiftGen #{swiftgen}](https://github.com/SwiftGen/SwiftGen/blob/#{swiftgen}/CHANGELOG.md)
     LINKS
-  end
-
-  desc "Push the CHANGELOG's top section as a GitHub release"
-  task :push_github_release do
-    require 'octokit'
-
-    client = Utils.octokit_client
-    tag = Utils.top_changelog_version
-    body = Utils.top_changelog_entry
-
-    repo_name = File.basename(`git remote get-url origin`.chomp, '.git').freeze
-    puts "Pushing release notes for tag #{tag}:"
-    puts body
-    client.create_release("SwiftGen/#{repo_name}", tag, name: tag, body: body)
   end
 end
