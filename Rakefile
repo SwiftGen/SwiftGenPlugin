@@ -24,7 +24,7 @@ namespace :spm do
 
     client = Utils.octokit_client
     release = client.latest_release('SwiftGen/SwiftGen')
-    asset = release.assets.find { |a| a.name == 'swiftgen.artifactbundle.zip' }
+    asset = release.assets.find { |a| a.name.end_with? '.artifactbundle.zip' }
 
     raise 'Release asset not found' if asset.nil?
 
@@ -40,7 +40,7 @@ namespace :spm do
     # update package file
     puts 'Updating `Package.swift`…'
     package = File.read('Package.swift')
-    package.sub!(/https:\/\/.+swiftgen\.artifactbundle\.zip/, asset.browser_download_url)
+    package.sub!(/https:\/\/.+\.artifactbundle\.zip/, asset.browser_download_url)
     package.sub!(/checksum: "\w+"/, "checksum: \"#{checksum}\"")
     File.write('Package.swift', package)
 

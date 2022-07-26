@@ -29,7 +29,7 @@ let package = Package(
     ),
     .binaryTarget(
       name: "swiftgen",
-      url: "https://github.com/SwiftGen/SwiftGen/releases/download/6.6.0-prerelease/swiftgen.artifactbundle.zip",
+      url: "https://github.com/SwiftGen/SwiftGen/releases/download/6.6.0-prerelease/swiftgen-6.6.0.artifactbundle.zip",
       checksum: "b178d7c60fe88af6f67e951336ed00cd2eef56040974f3700c02d31500bb3da7"
     )
   ]
