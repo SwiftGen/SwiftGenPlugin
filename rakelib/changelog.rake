@@ -55,7 +55,8 @@ namespace :changelog do
   desc 'Add links to other CHANGELOGs in the topmost SwiftGen CHANGELOG entry'
   task :links do
     changelog = File.read('CHANGELOG.md')
-    abort('Links seems to already exist for latest version entry') if /^### (.*)/.match(changelog)[1] == LINKS_SECTION_TITLE
+    topmost = /^### (.*)/.match(changelog) || ['', '']
+    abort('Links seems to already exist for latest version entry') if topmost[1] == LINKS_SECTION_TITLE
     links = linked_changelogs(
       swiftgen: Utils.swiftgen_version
     )

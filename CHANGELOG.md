@@ -2,20 +2,8 @@
 
 ---
 
-## Stable Branch
+## 6.6.0
 
-### Breaking Changes
+### Changes in core dependencies of SwiftGenPlugin
 
-_None_
-
-### New Features
-
-_None_
-
-### Bug Fixes
-
-_None_
-
-### Internal Changes
-
-_None_
+* [SwiftGen 6.6.0](https://github.com/SwiftGen/SwiftGen/blob/6.6.0/CHANGELOG.md)
