@@ -2,6 +2,12 @@
 
 ---
 
+## 6.6.2
+
+### Changes in core dependencies of SwiftGenPlugin
+
+* [SwiftGen 6.6.2](https://github.com/SwiftGen/SwiftGen/blob/6.6.2/CHANGELOG.md)
+
 ## 6.6.1
 
 ### Changes in core dependencies of SwiftGenPlugin
