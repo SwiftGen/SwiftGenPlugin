@@ -1,5 +1,9 @@
 # SwiftGenPlugin
 
+![platform](https://img.shields.io/badge/platform-ios%20%7C%20osx%20%7C%20watchos%20%7C%20tvos-%239898984)
+![swift-version](https://img.shields.io/badge/Swift-%3E%3D5.6.0-orange)
+![license](https://img.shields.io/badge/license-MIT-green)
+
 SwiftGen code generation for Swift packages that works on any machine. No installation required, simply add the package to your `Package.swift`'s dependencies:
 
 ```swift
