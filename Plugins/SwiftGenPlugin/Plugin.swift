@@ -64,11 +64,15 @@ private extension Command {
         "PROJECT_DIR": context.package.directory,
         "TARGET_NAME": target.name,
         "PRODUCT_MODULE_NAME": target.moduleName,
-        "DERIVED_SOURCES_DIR": context.pluginWorkDirectory
+        "DERIVED_SOURCES_DIR": context.outputDirectoryPath
       ],
-      outputFilesDirectory: context.pluginWorkDirectory
+      outputFilesDirectory: context.outputDirectoryPath
     )
   }
+}
+
+private extension PluginContext {
+    var outputDirectoryPath: Path { pluginWorkDirectory.appending(subpath: "output") }
 }
 
 private extension FileManager {
