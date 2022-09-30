@@ -4,6 +4,7 @@
 // MIT Licence
 //
 
+import CryptoKit
 import Foundation
 import PackagePlugin
 
@@ -22,9 +23,18 @@ struct SwiftGenPlugin: BuildToolPlugin {
       return []
     }
 
-    // Clear the SwiftGen plugin's directory (in case of dangling files)
-    fileManager.forceClean(directory: context.pluginWorkDirectory)
+     let checksum = combinedChecksum(for: configurations)
+     if let checksum = checksum,
+        let oldChecksum = try? String(contentsOfFile: context.checksumPath.string),
+        oldChecksum == checksum {
+     } else {
+       // Clear the SwiftGen plugin's directory (in case of dangling files)
+       Diagnostics.remark("It seems like the `swiftgen.yml` files have changed, removing cached data")
+       fileManager.forceClean(directory: context.pluginWorkDirectory)
+     }
+     try? checksum?.write(toFile: context.checksumPath.string, atomically: true, encoding: .utf8)
 
+     try? fileManager.createDirectory(atPath: context.outputDirectoryPath.string, withIntermediateDirectories: true)
     return try configurations.map { configuration in
       try .swiftgen(using: configuration, context: context, target: target)
     }
@@ -73,6 +83,7 @@ private extension Command {
 
 private extension PluginContext {
     var outputDirectoryPath: Path { pluginWorkDirectory.appending(subpath: "output") }
+    var checksumPath: Path { pluginWorkDirectory.appending(subpath: "swiftgen-checksums") }
 }
 
 private extension FileManager {
@@ -94,4 +105,8 @@ extension Target {
       return ""
     }
   }
+}
+
+private func combinedChecksum(for configurations: [Path]) -> String? {
+    try? configurations.map { Insecure.MD5.hash(data: try Data(contentsOf: URL(fileURLWithPath: $0.string))).description }.joined(separator: "-")
 }
