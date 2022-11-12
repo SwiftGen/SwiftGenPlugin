@@ -38,7 +38,8 @@ private extension SwiftGenPlugin {
     [
       "PROJECT_DIR": context.package.directory.string,
       "TARGET_NAME": target?.name ?? "",
-      "PRODUCT_MODULE_NAME": target?.moduleName ?? ""
+      "PRODUCT_MODULE_NAME": target?.moduleName ?? "",
+      "DERIVED_SOURCES_DIR": context.pluginWorkDirectory.string
     ]
   }
     
